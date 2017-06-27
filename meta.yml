@@ -1,0 +1,15 @@
+freeze_files:
+    - package.json
+    - package-lock.json
+    - yarn.lock
+    - index.js
+    - index.html
+    - webpack.config.js
+    - .drone.yml
+    - meta.yml
+    - src/helpers.js
+    - test/specs/
+    - test/nightwatch.conf.js
+report_files:
+    - CHROME_57.0.2987.98_Linux_test.xml
+report_target: .report.json
