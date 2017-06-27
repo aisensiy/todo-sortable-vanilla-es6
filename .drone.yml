@@ -1,0 +1,41 @@
+pipeline:
+  restore-cache:
+    image: drillster/drone-volume-cache
+    restore: true
+    mount:
+      - ./node_modules
+    # Mount the cache volume, needs "Trusted"
+    volumes:
+      - /tmp/cache:/cache
+
+  build:
+    image: node:6.10.2-alpine
+    commands:
+      - yarn global add nightwatch
+      - yarn install
+      - yarn run build
+      - yarn run serve &
+      - sleep 5
+      - cd test && nightwatch
+
+  report:
+    image: eisenxu/junit-reportor
+    test_results: test/reports
+    when: 
+      status: [ success, failure ]
+  
+  rebuild-cache:
+    image: drillster/drone-volume-cache
+    rebuild: true
+    mount:
+      - ./node_modules
+    # Mount the cache volume, needs "Trusted"
+    volumes:
+      - /tmp/cache:/cache
+
+services:
+  chromedriver:
+    image: blueimp/chromedriver
+    environment:
+      - VNC_ENABLED=true
+      - EXPOSE_X11=true
